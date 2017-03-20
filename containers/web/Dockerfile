@@ -5,8 +5,8 @@ RUN git clone https://github.com/supermitsuba/sms.git /var/www/web
 
 WORKDIR /var/www/web/web
 RUN  dotnet restore
-RUN  dotnet build
+RUN dotnet publish -c Release -o out
 
 EXPOSE 5000
 
-RUN dotnet run 
+ENTRYPOINT ["dotnet", "out/dotnetapp.dll"]
