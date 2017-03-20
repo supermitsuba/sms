@@ -26,5 +26,12 @@ namespace WebApplication.Controllers
             messageQueue.SendMessage(message);
             return Ok("Message will print shortly.");
         }
+
+        [HttpPost]
+        [Route("api/test")]
+        public IActionResult GetTest()
+        {
+            return Ok("Working...");
+        }
     }
 }
