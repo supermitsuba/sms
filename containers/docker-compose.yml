@@ -1,6 +1,6 @@
 version: '2'
 services:
-  rabbitMQ:
+  rabbit_mq:
     image: rabbitmq:3.6.8-management
     ports:
     - "8080:8080"
