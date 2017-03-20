@@ -1,0 +1,31 @@
+version: '2'
+services:
+  rabbitMQ:
+    image: rabbitmq:3.6.8
+    ports:
+    - "8080:8080"
+    - "15672:15672"
+  web_message:
+    build: ./web
+    ports: 
+    - "5000:8000"
+    environment:
+    - RABBITMQ_DEFAULT_VHOST=vhost
+    - RABBITMQ_DEFAULT_USER=guest
+    - RABBITMQ_DEFAULT_PASS=guest
+    links:
+    - rabbitMQ
+#
+#  web:
+#    build: .
+#    ports:
+#    - "5000:5000"
+#    volumes:
+#    - .:/code
+#    - logvolume01:/var/log
+#    links:
+#    - redis
+#  redis:
+#    image: redis
+#volumes:
+#  logvolume01: {}
