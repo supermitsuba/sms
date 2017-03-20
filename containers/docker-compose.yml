@@ -1,9 +1,13 @@
 version: '2'
 services:
   rabbitMQ:
-    image: rabbitmq:3.6.8
+    image: rabbitmq:3.6.8-management
     ports:
     - "8080:8080"
+    - "4369:4369"
+    - "5671:5671"
+    - "5672:5672"
+    - "25672:25672"
     - "15672:15672"
   web_message:
     build: ./web
