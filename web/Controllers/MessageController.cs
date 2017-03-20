@@ -27,7 +27,7 @@ namespace WebApplication.Controllers
             return Ok("Message will print shortly.");
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("api/test")]
         public IActionResult GetTest()
         {
