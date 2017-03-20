@@ -9,4 +9,4 @@ RUN dotnet publish -c Release -o out
 
 EXPOSE 5000
 
-ENTRYPOINT ["dotnet", "out/dotnetapp.dll"]
+CMD ["dotnet","run"]
