@@ -12,7 +12,7 @@ services:
   web_message:
     build: ./web
     ports: 
-    - "5000:8000"
+    - "8000:5000"
     environment:
     - RABBITMQ_DEFAULT_VHOST=vhost
     - RABBITMQ_DEFAULT_USER=guest
