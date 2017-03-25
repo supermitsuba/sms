@@ -19,6 +19,10 @@ services:
     - RABBITMQ_DEFAULT_PASS=guest
     links:
     - rabbit_mq
+  weather_timer:
+    build: ./timers/weather
+    links:
+    - web_message
 #
 #  web:
 #    build: .

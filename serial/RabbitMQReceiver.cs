@@ -3,7 +3,6 @@ using System;
 using Serial.Models;
 using RabbitMQ.Client.Events;
 using System.Collections.Generic;
-using System.Threading;
 using System.Text;
 
 namespace Serial.Services
