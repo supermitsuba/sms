@@ -22,12 +22,22 @@ namespace ConsoleApplication
             }
 
             Console.WriteLine("Getting weather!");
-            var message = RetryGetMessage(args[0], args[1]);
-            message.Wait();
-            
-            dynamic results = JsonConvert.DeserializeObject(message.Result);
-            double temperature = (results.main.temp * 9 / 5) - 459.67;
-            string conditions = results.weather[0].main;
+            double temperature;
+            string conditions;
+            try
+            {
+                var message = RetryGetMessage(args[0], args[1]);
+                message.Wait();
+                dynamic results = JsonConvert.DeserializeObject(message.Result);
+                temperature = (results.main.temp * 9 / 5) - 459.67;
+                conditions = results.weather[0].main;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Could not get weather information");
+                temperature = 0.0;
+                conditions = "Not Working!";
+            }
             
 
             Console.WriteLine("Posting time!");
