@@ -15,6 +15,12 @@ namespace ConsoleApplication
 
         public static void Main(string[] args)
         {
+            Console.WriteLine("Args are: ");
+            foreach(var item in args)
+            {
+                Console.WriteLine("- {0}", item);
+            }
+
             Console.WriteLine("Getting weather!");
             var message = RetryGetMessage(args[0], args[1]);
             message.Wait();
