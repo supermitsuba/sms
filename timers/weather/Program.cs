@@ -15,6 +15,7 @@ namespace ConsoleApplication
 
         public static void Main(string[] args)
         {
+            Console.WriteLine("Getting weather!");
             var message = RetryGetMessage(args[0], args[1]);
             message.Wait();
             
@@ -23,10 +24,12 @@ namespace ConsoleApplication
             string conditions = results.weather[0].main;
             
 
+            Console.WriteLine("Posting time!");
             var dateTimeMessage = string.Format("Date: {0:MM/dd/yyyy}Time: {0:hh:mm tt}", DateTime.Now);
             var task1 = RetryPostMessage(args[2], args[3], "{ \"duration\":\"10\", \"text\":\""+dateTimeMessage+"\" }");
             task1.Wait();
 
+            Console.WriteLine("Posting weather!");
             var weatherMessage = string.Format("Now :    {0:0.0} F {1}", temperature, conditions);
             var task2 = RetryPostMessage(args[2], args[3], "{ \"duration\":\"10\", \"text\":\""+weatherMessage+"\" }");
             task2.Wait();
