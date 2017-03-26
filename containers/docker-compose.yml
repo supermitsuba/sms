@@ -30,6 +30,11 @@ services:
     entrypoint: ["dotnet", "run", "http://api.openweathermap.org/", "data/2.5/weather?zip=48307,us&appid=", "http://web_message:5000/", "api/message"]
     links:
     - web_message
+  serial:
+    build: ./serial/golang
+    entrypoint: ["./main", "amqp://guest:guest@rabbit_mq", "console"]
+    links:
+    - web_message
 #
 #  web:
 #    build: .
