@@ -32,9 +32,11 @@ services:
     - web_message
   serial:
     build: ./serial/golang
-    entrypoint: ["./main", "amqp://guest:guest@rabbit_mq", "console"]
+    entrypoint: ["./main", "amqp://guest:guest@rabbit_mq", "/dev/ttyUSB0"]
     links:
     - web_message
+    devices:
+    - "/dev/tty.usbmodem1421:/dev/ttyUSB0"
 #
 #  web:
 #    build: .
