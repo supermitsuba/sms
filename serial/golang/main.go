@@ -19,10 +19,25 @@ func failOnError(err error, msg string) {
 	}
 }
 
+type receiveMessageFunc func(<-chan amqp.Delivery)
+
 func main() {
 	fmt.Println(os.Args)
 	amqpURL := os.Args[1]
 
+	listenForMesages(amqpURL, "messages", func(msgs <-chan amqp.Delivery) {
+		for d := range msgs {
+			receivedMessage(d.Body)
+			d.Ack(false)
+			log.Printf("Done")
+		}
+	})
+
+	forever := make(chan bool)
+	<-forever
+}
+
+func listenForMesages(amqpURL string, queueName string, myFunc receiveMessageFunc) {
 	conn, err := amqp.Dial(amqpURL)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
@@ -32,12 +47,12 @@ func main() {
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
-		"messages", // name
-		true,       // durable
-		false,      // delete when unused
-		false,      // exclusive
-		false,      // no-wait
-		nil,        // arguments
+		queueName, // name
+		true,      // durable
+		false,     // delete when unused
+		false,     // exclusive
+		false,     // no-wait
+		nil,       // arguments
 	)
 	failOnError(err, "Failed to declare a queue")
 
@@ -59,18 +74,9 @@ func main() {
 	)
 	failOnError(err, "Failed to register a consumer")
 
-	forever := make(chan bool)
-
-	go func() {
-		for d := range msgs {
-			receivedMessage(d.Body)
-			d.Ack(false)
-			log.Printf("Done")
-		}
-	}()
+	myFunc(msgs)
 
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
-	<-forever
 }
 
 func receivedMessage(message []byte) {
@@ -84,27 +90,31 @@ func receivedMessage(message []byte) {
 
 func derp(message string) {
 	serialPort := os.Args[2]
-	log.Printf("The USB port is: %s", serialPort)
-	options := serial.OpenOptions{
-		PortName:        serialPort,
-		BaudRate:        9600,
-		DataBits:        8,
-		StopBits:        1,
-		MinimumReadSize: 4,
-	}
+	if serialPort == "console" {
+		log.Printf("This is printing just to console. Message: %s", message)
+	} else {
+		log.Printf("The USB port is: %s", serialPort)
+		options := serial.OpenOptions{
+			PortName:        serialPort,
+			BaudRate:        9600,
+			DataBits:        8,
+			StopBits:        1,
+			MinimumReadSize: 4,
+		}
 
-	s, err := serial.Open(options)
-	if err != nil {
-		log.Fatal(err)
-	}
+		s, err := serial.Open(options)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	n, err := s.Write([]byte(message))
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("%q", n)
+		n, err := s.Write([]byte(message))
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("%q", n)
 
-	//s.Close()
+		s.Close()
+	}
 }
 
 type Message struct {

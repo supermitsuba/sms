@@ -23,7 +23,7 @@ namespace WebApplication.Controllers
                 return BadRequest("Must contain a body.");
             }
             
-            if(priority)
+            if(priority && priority == true)
             {
                 messageQueue.SendMessage(message, "priority");
             }
