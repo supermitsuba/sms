@@ -8,6 +8,7 @@ import (
 
 	"encoding/json"
 
+	"github.com/jacobsa/go-serial/serial"
 	"github.com/streadway/amqp"
 )
 
@@ -21,7 +22,6 @@ func failOnError(err error, msg string) {
 func main() {
 	fmt.Println(os.Args)
 	amqpURL := os.Args[1]
-	//serialPort := os.Args[2]
 
 	conn, err := amqp.Dial(amqpURL)
 	failOnError(err, "Failed to connect to RabbitMQ")
@@ -77,8 +77,34 @@ func receivedMessage(message []byte) {
 	var m Message
 	json.Unmarshal(message, &m)
 	log.Printf("Received a message: %s", m.Text)
+	derp(" " + m.Text)
 	timeout := time.Duration(m.Duration) * time.Second
 	time.Sleep(timeout)
+}
+
+func derp(message string) {
+	serialPort := os.Args[2]
+	log.Printf("The USB port is: %s", serialPort)
+	options := serial.OpenOptions{
+		PortName:        serialPort,
+		BaudRate:        9600,
+		DataBits:        8,
+		StopBits:        1,
+		MinimumReadSize: 4,
+	}
+
+	s, err := serial.Open(options)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	n, err := s.Write([]byte(message))
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("%q", n)
+
+	//s.Close()
 }
 
 type Message struct {
