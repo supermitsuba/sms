@@ -16,14 +16,22 @@ namespace WebApplication.Controllers
 
         [HttpPost]
         [Route("api/message")]
-        public IActionResult CreateMessage([FromBody]Message message)
+        public IActionResult CreateMessage([FromBody]Message message, [FromQuery] bool priority)
         {
             if(message == null)
             {
                 return BadRequest("Must contain a body.");
             }
             
-            messageQueue.SendMessage(message);
+            if(priority)
+            {
+                messageQueue.SendMessage(message, "priority");
+            }
+            else
+            {
+                messageQueue.SendMessage(message, "messages");
+            }
+
             return Ok("Message will print shortly.");
         }
 

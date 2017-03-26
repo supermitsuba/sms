@@ -35,7 +35,7 @@ namespace WebApplication
             var queueConnection = Configuration["ConnectionStrings:queueConnection"];
             var queueName       = Configuration["appSettings:queueName"];
             services.AddSingleton<RabbitMQClient>((sp) => {
-                return new RabbitMQClient(queueConnection, queueName);
+                return new RabbitMQClient(queueConnection);
             });
         }
 

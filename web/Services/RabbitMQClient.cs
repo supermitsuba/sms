@@ -9,29 +9,27 @@ namespace WebApplication.Services
     public class RabbitMQClient : IDisposable
     {
         private readonly IConnection conn;
-        private readonly string queueName;
 
-        public RabbitMQClient(string url, string queueName)
+        public RabbitMQClient(string url)
         {
             ConnectionFactory factory = new ConnectionFactory();
             factory.AutomaticRecoveryEnabled = true;
             factory.Uri = url;
             this.conn = factory.CreateConnection();
-            this.queueName = queueName;
         }
 
-        public void SendMessage(Message message)
+        public void SendMessage(Message message, string queueName)
         {
             using (var channel = this.conn.CreateModel()) 
             {
                 var messageString = Newtonsoft.Json.JsonConvert.SerializeObject(message);
                 var messageBodyBytes = System.Text.Encoding.UTF8.GetBytes( messageString );
 
-                channel.QueueDeclare(this.queueName, true, false, false, null); 
+                channel.QueueDeclare(queueName, true, false, false, null); 
                 var basicProperties = channel.CreateBasicProperties(); 
                 basicProperties.DeliveryMode = 2; 
                 
-                channel.BasicPublish("", this.queueName, basicProperties, messageBodyBytes);
+                channel.BasicPublish("", queueName, basicProperties, messageBodyBytes);
             }
         }
 
