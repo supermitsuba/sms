@@ -86,6 +86,7 @@ func receivedMessage(message []byte) {
 	derp(" " + m.Text)
 	timeout := time.Duration(m.Duration) * time.Second
 	time.Sleep(timeout)
+	derp(" ")
 }
 
 func derp(message string) {
