@@ -1,7 +1,7 @@
 version: '2'
 services:
   rabbit_mq:
-    image: ronnyroos/rpi-rabbitmq #for raspberry pi
+    image: rabbitmq:3.6.8-management # ronnyroos/rpi-rabbitmq for raspberry pi
     ports:
     - "8080:8080"
     - "4369:4369"
