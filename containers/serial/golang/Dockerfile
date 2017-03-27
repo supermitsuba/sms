@@ -1,8 +1,16 @@
-FROM FROM resin/rpi-raspbian
+FROM resin/rpi-raspbian
 
 RUN apt update && apt install -y git && apt install golang
-RUN git clone https://github.com/supermitsuba/sms.git /var/sms
+RUN mkdir /var/go
+RUN mkdir /var/go/src
+RUN mkdir /var/go/src/github.com
+RUN mkdir /var/go/src/github.com/supermitsuba
+RUN mkdir /var/go/pkg
+RUN mkdir /var/go/bin
+ENV GOPATH=/var/go
+RUN git clone https://github.com/supermitsuba/sms.git /var/go/src/github.com/supermitsuba/sms
 
-WORKDIR /var/sms/serial/golang
+WORKDIR /var/go/src/github.com/supermitsuba/sms/serial/golang
+
 RUN  go get -d -v
 RUN  go build main.go

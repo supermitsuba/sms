@@ -36,4 +36,4 @@ services:
     links:
     - web_message
     devices:
-    - "/dev/tty.usbmodem1421:/dev/ttyUSB0"
+    - "/dev/ttyACM0:/dev/ttyUSB0"
