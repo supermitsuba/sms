@@ -22,7 +22,7 @@ services:
     links:
     - web_message
   weather_timer:
-    build: ./timers/time
+    build: ./timers/weather
     entrypoint: ["./main", "http://web_message:5000/api/message", "http://api.openweathermap.org/data/2.5/weather?zip=48307,us&appid="]
     links:
     - web_message
