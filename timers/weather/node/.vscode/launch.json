@@ -1,0 +1,25 @@
+{
+    // Use IntelliSense to learn about possible Node.js debug attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "program": "${workspaceRoot}/main.js",
+            "args": [
+                "http://192.168.10.122:8000/api/message",
+                "http://api.openweathermap.org/data/2.5/weather?zip=48307,us&appid=480b42d2dc3eb6aae6664c3921733971"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Attach to Process",
+            "address": "localhost",
+            "port": 5858
+        }
+    ]
+}
