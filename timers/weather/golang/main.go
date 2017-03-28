@@ -1,67 +1,39 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
-	"io"
-	"log"
+	"encoding/json"
 	"net/http"
-	"os"
-	"strconv"
+	"io/ioutil"
 )
 
 func main() {
-	message := "{ \"duration\":30, \"text\":\"" + GetWeather() + "\" }"
-	log.Printf("Here is the message: " + message)
-	UpdateMessage(message)
+	res, err := http.Get("http://api.openweathermap.org/data/2.5/weather?zip=48307,us&appid=480b42d2dc3eb6aae6664c3921733971")
+	if err != nil {
+    		panic(err.Error())
+	}
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+    		panic(err.Error())
+	}
+
+	var s = new (WeatherModel)
+	err1 := json.Unmarshal(body, &s)
+	if(err1 != nil){
+        	fmt.Println("whoops:", err1)
+    	}
+	fmt.Println("Hello, playground", s.WeatherSections[0].Main, s.Main.Temperature )
 }
 
-type WeatherData struct {
-	Weather Conditions `json:"weather"`
-	Main    Stats      `json:"main"`
+type WeatherModel struct {
+	WeatherSections []WeatherSection `json:"weather"`
+	Main MainSection `json:"main"`
 }
 
-type Conditions struct {
+type WeatherSection struct {
 	Main string `json:"main"`
 }
 
-type Stats struct {
-	Temp float64 `json:"temp"`
-}
-
-func GetWeather() string {
-	weatherURL := os.Args[2]
-	resp, err := http.Get(weatherURL)
-	failOnError(err, "Could not send weather get http request.")
-	io.Copy(os.Stdout, resp.Body)
-
-	m := &WeatherData{}
-	err1 := json.NewDecoder(resp.Body).Decode(&m)
-	failOnError(err1, "Could not parse json.")
-
-	log.Printf("Got the parsed json: %s", m)
-	temperature := (m.Main.Temp * 9 / 5) - 459.67
-	conditions := m.Weather.Main
-
-	return "Now:     " + strconv.FormatFloat(temperature, 'f', 1, 64) + " F " + conditions
-}
-
-func UpdateMessage(message string) {
-	b := new(bytes.Buffer)
-	b.WriteString(message)
-
-	log.Printf("The message is: %s", message)
-
-	URL := os.Args[1]
-	resp, err := http.Post(URL, "application/json", b)
-	failOnError(err, "Could not send post http request.")
-	io.Copy(os.Stdout, resp.Body)
-}
-
-func failOnError(err error, msg string) {
-	if err != nil {
-		log.Fatalf("%s: %s", msg, err)
-		panic(fmt.Sprintf("%s: %s", msg, err))
-	}
+type MainSection struct {
+	Temperature float64 `json:"temp"`
 }
