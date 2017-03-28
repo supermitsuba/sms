@@ -10,7 +10,7 @@ RUN mkdir /var/go/bin
 ENV GOPATH=/var/go
 RUN git clone https://github.com/supermitsuba/sms.git /var/go/src/github.com/supermitsuba/sms
 
-WORKDIR /var/go/src/github.com/supermitsuba/sms/web/golang/
+WORKDIR /var/go/src/github.com/supermitsuba/sms/timers/time/golang
 
 RUN  go get -d -v
 RUN  go build main.go
