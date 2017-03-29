@@ -5,17 +5,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 )
 
 func main() {
 	message := Message{
 		Text:     os.Args[2],
-		Duration: 30,
+		Duration: 15,
 	}
 	SendMessage(message, os.Args[1])
 
