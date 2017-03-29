@@ -13,7 +13,7 @@ import (
 func main() {
 	URL := os.Args[1]
 	t := time.Now()
-	message := "{ \"duration\":30, \"text\":\"Time: " + t.Format("03:04PM") + "   Date: " + t.Format("01/02/2006") + "\" }"
+	message := "{ \"duration\":30, \"text\":\"Time: " + t.Format("03:04PM") + "   Date: " + t.Format("01/02/06") + "\" }"
 	b := new(bytes.Buffer)
 	b.WriteString(message)
 

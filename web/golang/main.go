@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -20,12 +21,20 @@ type Message struct {
 func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/api/test", Index)
+	router.HandleFunc("/", Index)
+	router.HandleFunc("/api/test", Test)
 	router.HandleFunc("/api/message", MessageFunc)
 	log.Fatal(http.ListenAndServe(":5000", router))
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
+	filename := "index.html"
+	body, _ := ioutil.ReadFile(filename)
+	w.Header().Set("Content-Type", "text/html; charset=UTF-8")
+	fmt.Fprintf(w, string(body))
+}
+
+func Test(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Working...")
 }
 

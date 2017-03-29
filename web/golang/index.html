@@ -1,0 +1,36 @@
+<html>
+    <head>
+
+    </head>
+    <body>
+        <h1>Print a message!</h1>
+        <div>
+            <strong>Message:</strong>
+            <input type="text" id="message" />
+            <input type="button" id="submitMessage" value="Send Message" />
+        </div>
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
+        <script type="text/javascript">
+            $(function() {
+                $('#submitMessage').click(function(){
+                    var message = {
+                        'text': $('#message').val(),
+                        'duration' : 10
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/message",
+                        data: JSON.stringify(message),
+                        success: function(){
+                            alert('Sent!')   
+                        },
+                        fail: function() {
+                            alert( "error" );
+                        }
+                    });
+                })
+            });
+        </script>
+    </body>
+</html>
