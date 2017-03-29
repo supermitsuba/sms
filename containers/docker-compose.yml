@@ -31,6 +31,7 @@ services:
     entrypoint: ["./main", "http://web_message:5000/api/message", "WiFi"]
     links:
     - web_message
+    # docker run containers_message_timer ./main http://192.168.10.122:8000/api/message derp
   serial:
     build: ./serial/golang
     entrypoint: ["./main", "amqp://guest:guest@rabbit_mq", "/dev/ttyUSB0"]
