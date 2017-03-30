@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"encoding/json"
 	"strings"
+	"time"
+	"strconv"
+	"log"
 )
 
 func main() {
@@ -17,10 +20,17 @@ func main() {
 	for i := 0; i < len(s.WeatherForcast); i++ {
 		item := s.WeatherForcast[i]
 		
-		d := strings.Split(item.DateOfTemperature, " ")[1]
-		e := strings.Split(d, ":")[0]
+		d := strings.Split(item.DateOfTemperature, " ")
+		e := strings.Split(d[1], ":")[0]
 		if e == "15" {
 			fmt.Println("Hello, playground ", item)
+			t1, f := time.Parse("2006-01-02", d[0])
+			failOnError(f, "Could not send http request.")
+			t := t1.Format("Mon")
+			temp := (item.Main.Temperature * 9 / 5) - 459.17
+			temp1 := strconv.FormatFloat(temp, 'f', 0, 64)
+			fmt.Println(t, ":    ", temp1, " F ", item.WeatherSections[0].Main)
+			
 		}
 	}
 }
@@ -46,6 +56,13 @@ type WeatherSection struct {
 
 type MainSection struct {
 	Temperature float64 `json:"temp"`
+}
+
+func failOnError(err error, msg string) {
+	if err != nil {
+		log.Fatalf("%s: %s", msg, err)
+		panic(fmt.Sprintf("%s: %s", msg, err))
+	}
 }
 
 
