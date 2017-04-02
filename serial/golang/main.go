@@ -8,8 +8,6 @@ import (
 
 	"encoding/json"
 
-	"io"
-
 	"github.com/jacobsa/go-serial/serial"
 	"github.com/streadway/amqp"
 )
@@ -21,29 +19,11 @@ func failOnError(err error, msg string) {
 	}
 }
 
-var serialPortName string
-var serialPort io.ReadWriteCloser
-
 type receiveMessageFunc func(<-chan amqp.Delivery)
 
 func main() {
 	fmt.Println(os.Args)
 	amqpURL := os.Args[1]
-	serialPortName = os.Args[2]
-
-	log.Printf("The USB port is: %s", serialPortName)
-	options := serial.OpenOptions{
-		PortName:        serialPortName,
-		BaudRate:        9600,
-		DataBits:        8,
-		StopBits:        1,
-		MinimumReadSize: 4,
-	}
-
-	serialPort, err := serial.Open(options)
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	listenForMesages(amqpURL, "messages", func(msgs <-chan amqp.Delivery) {
 		for d := range msgs {
@@ -55,8 +35,6 @@ func main() {
 
 	forever := make(chan bool)
 	<-forever
-
-	serialPort.Close()
 }
 
 func listenForMesages(amqpURL string, queueName string, myFunc receiveMessageFunc) {
@@ -105,23 +83,38 @@ func receivedMessage(message []byte) {
 	var m Message
 	json.Unmarshal(message, &m)
 	log.Printf("Received a message: %s", m.Text)
-	derp(m.Text)
+	derp(" " + m.Text)
 	timeout := time.Duration(m.Duration) * time.Second
 	time.Sleep(timeout)
 	derp(" ")
 }
 
 func derp(message string) {
-
-	if serialPortName == "console" {
+	serialPort := os.Args[2]
+	if serialPort == "console" {
 		log.Printf("This is printing just to console. Message: %s", message)
 	} else {
+		log.Printf("The USB port is: %s", serialPort)
+		options := serial.OpenOptions{
+			PortName:        serialPort,
+			BaudRate:        9600,
+			DataBits:        8,
+			StopBits:        1,
+			MinimumReadSize: 4,
+		}
 
-		n, err := serialPort.Write([]byte(message))
+		s, err := serial.Open(options)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		n, err := s.Write([]byte(message))
 		if err != nil {
 			log.Fatal(err)
 		}
 		log.Printf("%q", n)
+
+		s.Close()
 	}
 }
 
