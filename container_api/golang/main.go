@@ -26,21 +26,16 @@ func Test(w http.ResponseWriter, r *http.Request) {
 
 func weatherCurrentFunc(w http.ResponseWriter, r *http.Request) {
 	currentWeatherContainerName := os.Args[2]
-	cmd := exec.Command("/bin/bash", "-c", "docker start "+currentWeatherContainerName)
-	if output, err := cmd.Output(); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Error: " + err.Error()))
-	} else {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK: " + string(output)))
-	}
-
-	return
+	callContainer(currentWeatherContainerName, w, r)
 }
 
 func weatherForecastFunc(w http.ResponseWriter, r *http.Request) {
 	forecastWeatherContainerName := os.Args[3]
-	cmd := exec.Command("/bin/bash", "-c", "docker start "+forecastWeatherContainerName)
+	callContainer(forecastWeatherContainerName, w, r)
+}
+
+func callContainer(container string, w http.ResponseWriter, r *http.Request) {
+	cmd := exec.Command("docker", "start", container)
 	if output, err := cmd.Output(); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("Error: " + err.Error()))
@@ -48,8 +43,6 @@ func weatherForecastFunc(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK: " + string(output)))
 	}
-
-	return
 }
 
 func failOnError(err error, msg string) {
