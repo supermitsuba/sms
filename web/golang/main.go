@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -25,10 +24,8 @@ func main() {
 	router.HandleFunc("/", Index)
 	router.HandleFunc("/api/test", Test).Methods("GET")
 	router.HandleFunc("/api/message", MessageFunc).Methods("POST")
-	router.HandleFunc("/api/weather/current", weatherCurrentFunc).Methods("POST")
-	router.HandleFunc("/api/weather/forecast", weatherForecastFunc).Methods("POST")
 
-	log.Fatal(http.ListenAndServe(":5000", router))
+	log.Fatal(http.ListenAndServe(":"+os.Args[1], router))
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -40,50 +37,6 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 func Test(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Working...")
-}
-
-func weatherCurrentFunc(w http.ResponseWriter, r *http.Request) {
-	currentWeatherContainerName := os.Args[2]
-	cmd := exec.Command("docker", "start", currentWeatherContainerName)
-	if err := cmd.Start(); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Error: " + err.Error()))
-	} else {
-		log.Printf("Waiting for command to finish...")
-
-		if err = cmd.Wait(); err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("Error: " + err.Error()))
-
-		} else {
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("OK"))
-		}
-	}
-
-	return
-}
-
-func weatherForecastFunc(w http.ResponseWriter, r *http.Request) {
-	forecastWeatherContainerName := os.Args[3]
-	cmd := exec.Command("docker", "start", forecastWeatherContainerName)
-	if err := cmd.Start(); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Error: " + err.Error()))
-	} else {
-		log.Printf("Waiting for command to finish...")
-
-		if err = cmd.Wait(); err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("Error: " + err.Error()))
-
-		} else {
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("OK"))
-		}
-	}
-
-	return
 }
 
 func MessageFunc(w http.ResponseWriter, r *http.Request) {
@@ -117,7 +70,7 @@ func MessageFunc(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Invalid item", 400)
 			return
 		}
-		SendMessage(os.Args[1], "priority", str)
+		SendMessage(os.Args[2], "priority", str)
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK Priority"))
 	} else {
@@ -126,7 +79,7 @@ func MessageFunc(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Invalid item", 400)
 			return
 		}
-		SendMessage(os.Args[1], "messages", str)
+		SendMessage(os.Args[2], "messages", str)
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	}

@@ -16,7 +16,7 @@ services:
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - /usr/bin/docker:/usr/bin/docker
-    entrypoint: ["./main", "amqp://guest:guest@rabbit_mq", "containers_weather_timer_1", "containers_forecast_timer_1"]
+    entrypoint: ["./main", "8000", "amqp://guest:guest@rabbit_mq"]
     links:
     - rabbit_mq
   time_timer:
