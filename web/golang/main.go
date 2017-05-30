@@ -22,10 +22,9 @@ func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", Index)
-	router.HandleFunc("/api/test", Test).Methods("GET")
-	router.HandleFunc("/api/message", MessageFunc).Methods("POST")
-
-	log.Fatal(http.ListenAndServe(":"+os.Args[1], router))
+	router.HandleFunc("/api/test", Test)
+	router.HandleFunc("/api/message", MessageFunc)
+	log.Fatal(http.ListenAndServe(":5000", router))
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -70,7 +69,7 @@ func MessageFunc(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Invalid item", 400)
 			return
 		}
-		SendMessage(os.Args[2], "priority", str)
+		SendMessage(os.Args[1], "priority", str)
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK Priority"))
 	} else {
@@ -79,7 +78,7 @@ func MessageFunc(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Invalid item", 400)
 			return
 		}
-		SendMessage(os.Args[2], "messages", str)
+		SendMessage(os.Args[1], "messages", str)
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	}
