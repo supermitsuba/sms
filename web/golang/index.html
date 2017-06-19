@@ -8,6 +8,8 @@
             <strong>Message:</strong>
             <input type="text" id="message" />
             <input type="button" id="submitMessage" value="Send Message" />
+            <input type="button" id="submitWeather" value="Send Weather" />
+            <input type="button" id="submitForecast" value="Send Forecast" />
         </div>
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
         <script type="text/javascript">
@@ -22,6 +24,37 @@
                         type: "POST",
                         url: "/api/message",
                         data: JSON.stringify(message),
+                        success: function(){
+                            alert('Sent!')   
+                        },
+                        fail: function() {
+                            alert( "error" );
+                        }
+                    });
+                })
+
+                $('#submitForcast').click(function(){
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/forecast",
+                        success: function(){
+                            alert('Sent!')   
+                        },
+                        fail: function() {
+                            alert( "error" );
+                        }
+                    });
+                })
+
+                $('#submitWeather').click(function(){
+                    var message = {
+                        'text': $('#message').val(),
+                        'duration' : 10
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/weather",
                         success: function(){
                             alert('Sent!')   
                         },
