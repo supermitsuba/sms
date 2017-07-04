@@ -9,36 +9,43 @@ services:
     - "5672:5672"
     - "25672:25672"
     - "15672:15672"
+    container_name: rabbit_mq
   base-sms:
     build: ./base
+    container_name: base-sms
   web_message:
     build: ./web/golang
-    ports: 
+    ports:
     - "8000:5000"
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - /usr/bin/docker:/usr/bin/docker
-    entrypoint: ["./main", "8000", "amqp://guest:guest@rabbit_mq"]
+    entrypoint: ["./main", "amqp://guest:guest@rabbit_mq", "http://api.openweathermap.org/data/2.5/weather?zip=48307,us&appid=", "http://api.openweathermap.org/data/2.5/forecast?zip=48307,us&appid=" ]
     links:
     - rabbit_mq
+    depends_on:
     - base-sms
   time_timer:
     build: ./timers/time
     entrypoint: ["./main", "http://web_message:5000/api/message"]
     links:
     - web_message
+    depends_on:
     - base-sms
   weather_timer:
     build: ./timers/weather
-    entrypoint: ["./main", "http://web_message:5000/api/message", "http://api.openweathermap.org/data/2.5/weather?zip=48307,us&appid="]
+    entrypoint: ["./main", "http://web_message:5000/api/message", "http://api.openweathermap.org/data/2.5/weather?zip=48307,us&appid"]
     links:
     - web_message
+    depends_on:
     - base-sms
+    container_name: weather
   message_timer:
     build: ./timers/message
     entrypoint: ["./main", "http://web_message:5000/api/message", "WiFi"]
     links:
     - web_message
+    depends_on:
     - base-sms
     # docker run containers_message_timer ./main http://192.168.10.122:8000/api/message derp
   forecast_timer:
@@ -47,11 +54,13 @@ services:
     links:
     - web_message
     - base-sms
+    container_name: forecast
   serial:
     build: ./serial/golang
     entrypoint: ["./main", "amqp://guest:guest@rabbit_mq", "/dev/ttyUSB0"]
     links:
     - web_message
+    depends_on:
     - base-sms
     devices:
     - "/dev/ttyACM0:/dev/ttyUSB0"
