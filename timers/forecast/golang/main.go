@@ -23,6 +23,7 @@ func main() {
 
 	myList := []Group{}
 
+	fmt.Println("--------", weather)
 	From(weather.WeatherForcast).
 		GroupByT(func(item ListWeather) string { // key
 			splitDateTime := strings.Split(item.DateOfTemperature, " ")
@@ -38,6 +39,7 @@ func main() {
 		Take(defaultTakeNumber).
 		ToSlice(&myList)
 
+	fmt.Println("--------", len(myList))
 	for i := 0; i < len(myList); i++ {
 
 		fmt.Println("--------")
@@ -52,14 +54,24 @@ func main() {
 			SelectT(func(x ListWeather) float64 { return x.Main.Temperature }).
 			Min()
 
-		Conditions := From(myList[i].Group).
-			FirstWithT(func(x ListWeather) bool {
+		Conditions := ""
+		hasCondition := From(myList[i].Group).
+			AnyWithT(func(x ListWeather) bool {
 				splitDateTime := strings.Split(x.DateOfTemperature, " ")
 				splitHour := strings.Split(splitDateTime[1], ":")[0]
 				return splitHour == "15"
-			}).(ListWeather)
+			})
 
-		temp := dayOfTheWeek + " H " + ConvertTempToFahrenheit(MaxTemp.(float64)) + " L " + ConvertTempToFahrenheit(MinTemp.(float64)) + "   " + Conditions.WeatherSections[0].Main
+		if hasCondition {
+			Conditions = From(myList[i].Group).
+				FirstWithT(func(x ListWeather) bool {
+					splitDateTime := strings.Split(x.DateOfTemperature, " ")
+					splitHour := strings.Split(splitDateTime[1], ":")[0]
+					return splitHour == "15"
+				}).(ListWeather).WeatherSections[0].Main
+		}
+
+		temp := dayOfTheWeek + " H " + ConvertTempToFahrenheit(MaxTemp.(float64)) + " L " + ConvertTempToFahrenheit(MinTemp.(float64)) + "   " + Conditions
 
 		myMessage := Message{Text: temp, Duration: 15}
 		fmt.Println(temp)
