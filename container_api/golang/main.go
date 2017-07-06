@@ -7,7 +7,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/gorilla/mux"
+	"github.com/supermitsuba/mux"
 )
 
 func main() { // ./main 5000, "containers_weather_timer_1", "containers_forecast_timer_1"
