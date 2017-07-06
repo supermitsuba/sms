@@ -148,7 +148,7 @@ func ForecastFunc(w http.ResponseWriter, r *http.Request) {
 
 		Conditions := ""
 		hasCondition := From(myList[i].Group).
-			AnyWithT(func(x ListWeather) bool {
+			AnyWithT(func(x WeatherModel) bool {
 				splitDateTime := strings.Split(x.DateOfTemperature, " ")
 				splitHour := strings.Split(splitDateTime[1], ":")[0]
 				return splitHour == "15"
@@ -156,11 +156,11 @@ func ForecastFunc(w http.ResponseWriter, r *http.Request) {
 
 		if hasCondition {
 			Conditions = From(myList[i].Group).
-				FirstWithT(func(x ListWeather) bool {
+				FirstWithT(func(x WeatherModel) bool {
 					splitDateTime := strings.Split(x.DateOfTemperature, " ")
 					splitHour := strings.Split(splitDateTime[1], ":")[0]
 					return splitHour == "15"
-				}).(ListWeather).WeatherSections[0].Main
+				}).(WeatherModel).WeatherSections[0].Main
 		}
 
 		temp := dayOfTheWeek + " H " + ConvertTempToFahrenheit(MaxTemp.(float64)) + " L " + ConvertTempToFahrenheit(MinTemp.(float64)) + "   " + Conditions
