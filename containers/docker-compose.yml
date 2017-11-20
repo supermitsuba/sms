@@ -50,7 +50,7 @@ services:
     - base-sms
     # docker run containers_message_timer ./main http://192.168.10.122:8000/api/message derp
   forecast_timer:
-    image: supermitsuba/forecast_timer:1
+    image: supermitsuba/forecast_timer:2
     entrypoint: ["./main", "http://web_message:5000/api/message", "http://api.openweathermap.org/data/2.5/forecast?zip=48307,us&appid="]
     links:
     - web_message
