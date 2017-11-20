@@ -42,7 +42,7 @@ services:
     - base-sms
     container_name: weather
   message_timer:
-    image: supermitsuba/message_timer:1
+    image: supermitsuba/message_timer:2
     entrypoint: ["./main", "http://web_message:5000/api/message", "WiFi"]
     links:
     - web_message
