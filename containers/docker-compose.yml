@@ -1,5 +1,14 @@
 version: '2'
 services:
+  nginx:
+    image: nginx:1.12.2
+    ports:
+    - "80:80"
+    volumes:
+    - ./nginx.conf:/var/www/web/nginx.conf
+    links:
+    - rabbit_mq
+    - web_message
   rabbit_mq:
     image: supermitsuba/rpi-rabbitmq:1 #for raspberry pi
     ports:
