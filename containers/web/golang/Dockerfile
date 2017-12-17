@@ -1,4 +1,6 @@
-FROM base-sms
+FROM supermitsuba/base-sms:1
+
+RUN curl -sSL https://get.docker.com | sh
 
 WORKDIR /var/go/src/github.com/supermitsuba/sms/web/golang/
 

@@ -19,8 +19,7 @@ services:
     - "8000:5000"
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
-    - /usr/bin/docker:/usr/bin/docker
-    entrypoint: ["./main", "amqp://guest:guest@rabbit_mq", "http://api.openweathermap.org/data/2.5/weather?zip=48307,us&appid=", "http://api.openweathermap.org/data/2.5/forecast?zip=48307,us&appid="]
+    entrypoint: ["./main", "amqp://guest:guest@rabbit_mq", "weather", "forecast"]
     links:
     - rabbit_mq
     depends_on:
@@ -48,6 +47,7 @@ services:
     - web_message
     depends_on:
     - base-sms
+    container_name: message
     # docker run containers_message_timer ./main http://192.168.10.122:8000/api/message derp
   forecast_timer:
     build: ./timers/forecast
