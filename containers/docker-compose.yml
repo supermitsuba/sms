@@ -1,7 +1,7 @@
 version: '2'
 services:
   rabbit_mq:
-    image: ronnyroos/rpi-rabbitmq #for raspberry pi
+    image: supermitsuba/rpi-rabbitmq:1 #for raspberry pi
     ports:
     - "8080:8080"
     - "4369:4369"
@@ -11,10 +11,10 @@ services:
     - "15672:15672"
     container_name: rabbit_mq
   base-sms:
-    build: ./base
+    image: supermitsuba/basesms:1
     container_name: base-sms
   web_message:
-    build: ./web/golang
+    image: supermitsuba/web_message:1
     ports: 
     - "8000:5000"
     volumes:
@@ -25,7 +25,7 @@ services:
     depends_on:
     - base-sms
   time_timer:
-    build: ./timers/time
+    image: supermitsuba/time_timer:1
     entrypoint: ["./main", "http://web_message:5000/api/message"]
     links:
     - web_message
@@ -33,7 +33,7 @@ services:
     depends_on:
     - base-sms
   weather_timer:
-    build: ./timers/weather
+    image: supermitsuba/weather_timer:1
     entrypoint: ["./main", "http://web_message:5000/api/message", "http://api.openweathermap.org/data/2.5/weather?zip=48307,us&appid="]
     links:
     - web_message
@@ -41,7 +41,7 @@ services:
     - base-sms
     container_name: weather
   message_timer:
-    build: ./timers/message
+    image: supermitsuba/message_timer:2
     entrypoint: ["./main", "http://web_message:5000/api/message", "WiFi"]
     links:
     - web_message
@@ -50,14 +50,14 @@ services:
     container_name: message
     # docker run containers_message_timer ./main http://192.168.10.122:8000/api/message derp
   forecast_timer:
-    build: ./timers/forecast
+    image: supermitsuba/forecast_timer:2
     entrypoint: ["./main", "http://web_message:5000/api/message", "http://api.openweathermap.org/data/2.5/forecast?zip=48307,us&appid="]
     links:
     - web_message
     - base-sms
     container_name: forecast
   serial:
-    build: ./serial/golang
+    image: supermitsuba/client_sms:1
     entrypoint: ["./main", "amqp://guest:guest@rabbit_mq", "/dev/ttyUSB0"]
     links:
     - web_message

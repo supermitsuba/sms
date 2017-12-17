@@ -8,8 +8,8 @@ import (
 
 	"encoding/json"
 
-	"github.com/jacobsa/go-serial/serial"
-	"github.com/streadway/amqp"
+	"github.com/supermitsuba/amqp"
+	"github.com/supermitsuba/go-serial/serial"
 )
 
 func failOnError(err error, msg string) {

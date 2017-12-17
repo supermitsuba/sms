@@ -1,4 +1,4 @@
-FROM base-sms
+FROM supermitsuba/basesms:1
 
 WORKDIR /var/go/src/github.com/supermitsuba/sms/timers/time/golang
 

@@ -1,4 +1,4 @@
-FROM supermitsuba/base-sms:1
+FROM supermitsuba/basesms:1
 
 RUN curl -sSL https://get.docker.com | sh
 
