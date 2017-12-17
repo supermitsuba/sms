@@ -14,6 +14,8 @@
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
         <script type="text/javascript">
             $(function() {
+                var url = getBaseUrl()[0];
+
                 $('#submitMessage').click(function(){
                     var message = {
                         'text': $('#message').val(),
@@ -22,7 +24,7 @@
 
                     $.ajax({
                         type: "POST",
-                        url: "/api/message",
+                        url: url+"api/message",
                         data: JSON.stringify(message),
                         success: function(){
                             alert('Sent!')   
@@ -36,7 +38,7 @@
                 $('#submitForecast').click(function(){
                     $.ajax({
                         type: "POST",
-                        url: "/api/forecast",
+                        url: url+"api/forecast",
                         success: function(){
                             alert('Sent!')   
                         },
@@ -54,7 +56,7 @@
 
                     $.ajax({
                         type: "POST",
-                        url: "/api/weather",
+                        url: url+"api/weather",
                         success: function(){
                             alert('Sent!')   
                         },
@@ -63,6 +65,11 @@
                         }
                     });
                 })
+
+                function getBaseUrl() {
+                    var re = new RegExp(/^.*\//);
+                    return re.exec(window.location.href);
+                }
             });
         </script>
     </body>
