@@ -1,5 +1,8 @@
 version: '2'
 services:
+  # nginx
+  # used to smooth over API and website names.
+  # Passes through nginx.conf 
   nginx:
     image: nginx:1.12.2
     ports:
@@ -9,6 +12,10 @@ services:
     links:
     - rabbit_mq
     - web_message
+  # rabbit mq
+  # used to queue up messages
+  # the ports open are for rabbit mq and web site configuration
+  # rabbit mq configuration port 15672
   rabbit_mq:
     image: supermitsuba/rpi-rabbitmq:1 #for raspberry pi
     ports:
@@ -19,9 +26,18 @@ services:
     - "25672:25672"
     - "15672:15672"
     container_name: rabbit_mq
+  # base sms
+  # used to install all the dependencies so the rebuild of other images are faster
   base-sms:
     image: supermitsuba/basesms:1
     container_name: base-sms
+  # web message
+  # Web site and API for the SMS system
+  # Arguments:
+  # 1. application (./main)
+  # 2. rabbit mq location 
+  # 3. name of weather container
+  # 4. name of forecast container
   web_message:
     image: supermitsuba/web_message:1
     ports: 
@@ -33,6 +49,11 @@ services:
     - rabbit_mq
     depends_on:
     - base-sms
+  # time timer
+  # Sends the time to the web message api
+  # Arguments:
+  # 1. application (./main)
+  # 2. web message api url to the status api
   time_timer:
     image: supermitsuba/time_timer:1
     entrypoint: ["./main", "http://web_message:5000/api/message"]
@@ -41,6 +62,12 @@ services:
     container_name: time
     depends_on:
     - base-sms
+  # weather timer
+  # Sends current weather to web message api
+  # Arguments:
+  # 1. application (./main)
+  # 2. web message api for messages
+  # 3. api call for weather
   weather_timer:
     image: supermitsuba/weather_timer:1
     entrypoint: ["./main", "http://web_message:5000/api/message", "http://api.openweathermap.org/data/2.5/weather?zip=48307,us&appid="]
@@ -49,6 +76,12 @@ services:
     depends_on:
     - base-sms
     container_name: weather
+  # message timer
+  # Send message to web message api
+  # Arguments:
+  # 1. application (./main)
+  # 2. web message api for messages  
+  # 3. the message to send
   message_timer:
     image: supermitsuba/message_timer:2
     entrypoint: ["./main", "http://web_message:5000/api/message", "WiFi"]
@@ -57,7 +90,12 @@ services:
     depends_on:
     - base-sms
     container_name: message
-    # docker run containers_message_timer ./main http://192.168.10.122:8000/api/message derp
+  # forecast timer
+  # Sends 5 day forecast to web message api
+  # Arguments:
+  # 1. application (./main)
+  # 2. web message api for messages
+  # 3. api call for forecast
   forecast_timer:
     image: supermitsuba/forecast_timer:2
     entrypoint: ["./main", "http://web_message:5000/api/message", "http://api.openweathermap.org/data/2.5/forecast?zip=48307,us&appid="]
@@ -65,6 +103,13 @@ services:
     - web_message
     - base-sms
     container_name: forecast
+  # serial
+  # Application service that reads messages off the queue and prints it to LED
+  # Arguments:
+  # 1. application (./main)
+  # 2. rabbit mq url
+  # 3. serial port to use for the LED
+  # 4. URL to the status of the LED API
   serial:
     image: supermitsuba/client_sms:1
     entrypoint: ["./main", "amqp://guest:guest@rabbit_mq", "/dev/ttyUSB0","http://web_message/api/status"]

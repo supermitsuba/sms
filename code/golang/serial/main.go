@@ -14,6 +14,7 @@ import (
 	"github.com/supermitsuba/go-serial/serial"
 )
 
+// used to capture errors and print it to console
 func failOnError(err error, msg string) {
 	if err != nil {
 		log.Fatalf("%s: %s", msg, err)
@@ -21,28 +22,32 @@ func failOnError(err error, msg string) {
 	}
 }
 
+// func for receiving a message from message queue
 type receiveMessageFunc func(<-chan amqp.Delivery)
 
 func main() {
 	fmt.Println(os.Args)
-	amqpURL := os.Args[1]
-	statusUrl := os.Args[3]
+	amqpURL := os.Args[1]   // url to the amqp
+	statusUrl := os.Args[3] // url to the status
 
 	listenForMesages(amqpURL, "messages", func(msgs <-chan amqp.Delivery) {
-		for d := range msgs {
+		for d := range msgs { // foreach message
 			status := GetStatus(statusUrl)
+			// Get the status for the led
+			// if it is false, do not display anything on the led
 			if status.IsLEDActive != false {
-				receivedMessage(d.Body)
+				receivedMessage(d.Body) // display message
 			}
-			d.Ack(false)
+			d.Ack(false) // acknowledge the message on the queue
 			log.Printf("Done")
 		}
 	})
 
-	forever := make(chan bool)
+	forever := make(chan bool) // listen forever
 	<-forever
 }
 
+// listen for messages on the queue
 func listenForMesages(amqpURL string, queueName string, myFunc receiveMessageFunc) {
 	conn, err := amqp.Dial(amqpURL)
 	failOnError(err, "Failed to connect to RabbitMQ")
@@ -85,6 +90,7 @@ func listenForMesages(amqpURL string, queueName string, myFunc receiveMessageFun
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
 }
 
+// unmarshal message and display message on led
 func receivedMessage(message []byte) {
 	var m Message
 	json.Unmarshal(message, &m)
@@ -95,6 +101,8 @@ func receivedMessage(message []byte) {
 	displayMessage(" ")
 }
 
+// if console, display in console for debugging
+// otherwise display message to led sign on the serial port
 func displayMessage(message string) {
 	serialPort := os.Args[2]
 	if serialPort == "console" {
@@ -124,6 +132,7 @@ func displayMessage(message string) {
 	}
 }
 
+// Call url and deserialize json into LEDStatus
 func GetStatus(URL string) LEDStatus {
 	var s LEDStatus
 	resp, err := http.Get(URL)

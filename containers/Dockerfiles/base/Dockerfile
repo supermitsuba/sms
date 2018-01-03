@@ -1,5 +1,6 @@
 FROM resin/rpi-raspbian
 
+# install golang and set up environment
 RUN apt update && apt install -y git && apt install golang
 RUN mkdir /var/go
 RUN mkdir /var/go/src

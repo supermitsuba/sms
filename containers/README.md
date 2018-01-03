@@ -21,6 +21,32 @@ This section describes how to build containers for the sms project.  I have prov
 9.  [Timer - Weather](https://hub.docker.com/r/supermitsuba/weather_timer/)
   *  Application to send current weather to the web message API
 
-Architecture
-============
+## Commands to help with containers
+
+### docker-compose
+1. ```docker-compose up -d ```
+  * start all images in docker-compose
+
+### docker
+1.  ```docker push supermitsuba/client_sms:1 ```
+  * push a docker image to docker hub
+2.  ```docker build -t supermitsuba/client_sms:1 . --no-cache ```
+  * build a docker image with a tag
+
+### Cron jobs
+1. ``` */12 6-23 * * * docker run containers_message_timer ./main http://192.168.10.115:8000/api/message "message" ```
+  * Display message on timer
+2. ```4,9,14,19,24,29,34,39,44,49,54,59 6-23 * * * docker start time```
+  * Display time on timer
+3. ```*/15 6-23 * * * docker start weather```
+  * Display weather on timer
+4. ```*/15 6-23 * * * docker start forecast```
+  * Display forecast on timer
+
+### nginx configuration
+1. [nginx configuration](https://raw.githubusercontent.com/supermitsuba/sms/master/containers/nginx.conf)
+
+
+## Architecture
+
 ![](https://raw.githubusercontent.com/supermitsuba/sms/master/architecture.png)
