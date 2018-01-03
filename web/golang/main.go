@@ -19,14 +19,23 @@ type Message struct {
 	Text     string `json:"text"`     //32 max validation
 }
 
+type Status struct {
+	isLedActive string `json:"isLedActive"`
+}
+
+var isLedActive bool
+
 func main() {
 
+	isLedActive = true
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", Index).Methods("GET")
 	router.HandleFunc("/api/test", Test).Methods("GET")
 	router.HandleFunc("/api/message", MessageFunc).Methods("POST")
 	router.HandleFunc("/api/weather", WeatherFunc).Methods("POST")
 	router.HandleFunc("/api/forecast", ForecastFunc).Methods("POST")
+	router.HandleFunc("/api/status", GetLed).Methods("GET")
+	router.HandleFunc("/api/led", ToggleLed).Methods("POST")
 	log.Fatal(http.ListenAndServe(":5000", router))
 }
 
@@ -99,6 +108,22 @@ func ForecastFunc(w http.ResponseWriter, r *http.Request) {
 	forecastContainer := os.Args[3]
 	log.Printf(" [x] Sent %s", forecastContainer)
 	callContainer(forecastContainer, w, r)
+}
+
+func GetLed(w http.ResponseWriter, r *http.Request) {
+	var result = "true"
+	if !isLedActive {
+		result = "false"
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{"isLEDActive": ` + result + ` }`))
+}
+
+func ToggleLed(w http.ResponseWriter, r *http.Request) {
+	isLedActive = !isLedActive
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("OK "))
 }
 
 func failOnError(err error, msg string) {

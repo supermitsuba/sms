@@ -1,6 +1,6 @@
 <html>
     <head>
-
+        
     </head>
     <body>
         <h1>Print a message!</h1>
@@ -11,10 +11,18 @@
             <input type="button" id="submitWeather" value="Send Weather" />
             <input type="button" id="submitForecast" value="Send Forecast" />
         </div>
+        <div>
+            <strong>Status: </strong>
+            <div id="ledActive"></div>
+            <div>
+                <input type="button" id="submitLED" value="On/Off LED" />
+            </div>
+        </div>
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
         <script type="text/javascript">
             $(function() {
                 var url = getBaseUrl()[0];
+                displayLed();
 
                 $('#submitMessage').click(function(){
                     var message = {
@@ -66,9 +74,37 @@
                     });
                 })
 
+                $('#submitLED').click(function(){
+                    $.ajax({
+                        type: "POST",
+                        url: url+"api/led",
+                        success: function(){
+                            alert('Sent!')   
+                        },
+                        fail: function() {
+                            alert( "error" );
+                        }
+                    });
+
+                    displayLed();
+                })
+                
                 function getBaseUrl() {
                     var re = new RegExp(/^.*\//);
                     return re.exec(window.location.href);
+                }
+
+                function displayLed() {
+                    $.ajax({
+                        type: "GET",
+                        url: url+"api/status",
+                        success: function(data){
+                            $('#ledActive').text("Is LED Active: "+data.isLEDActive); 
+                        },
+                        fail: function() {
+                            $('#ledActive').text("error");
+                        }
+                    });
                 }
             });
         </script>
