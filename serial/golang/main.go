@@ -31,7 +31,7 @@ func main() {
 	listenForMesages(amqpURL, "messages", func(msgs <-chan amqp.Delivery) {
 		for d := range msgs {
 			status := GetStatus(statusUrl)
-			if status.isLEDActive != false {
+			if status.IsLEDActive != false {
 				receivedMessage(d.Body)
 			}
 			d.Ack(false)
@@ -136,12 +136,12 @@ func GetStatus(URL string) LEDStatus {
 	err2 := json.Unmarshal(body, &s)
 	failOnError(err2, "Could not send http request.")
 
-	log.Printf("Get Body status '%v' = s '%v'", string(body), s.isLEDActive)
+	log.Printf("Get Body status '%v' = s '%v'", string(body), s.IsLEDActive)
 	return s
 }
 
 type LEDStatus struct {
-	isLEDActive bool `json:"isLEDActive"`
+	IsLEDActive bool `json:"isLEDActive"`
 }
 
 type Message struct {
