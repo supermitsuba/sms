@@ -1,5 +1,6 @@
 FROM supermitsuba/basesms:1
 
+RUN git clone https://github.com/supermitsuba/sms.git /var/go/src/github.com/supermitsuba/sms
 RUN curl -sSL https://get.docker.com | sh
 
 WORKDIR /var/go/src/github.com/supermitsuba/sms/web/golang/

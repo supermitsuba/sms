@@ -1,5 +1,7 @@
 FROM supermitsuba/basesms:1
 
+RUN git clone https://github.com/supermitsuba/sms.git /var/go/src/github.com/supermitsuba/sms
+
 WORKDIR /var/go/src/github.com/supermitsuba/sms/serial/golang
 
 RUN  go get -d -v

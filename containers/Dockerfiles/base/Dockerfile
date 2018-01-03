@@ -8,4 +8,3 @@ RUN mkdir /var/go/src/github.com/supermitsuba
 RUN mkdir /var/go/pkg
 RUN mkdir /var/go/bin
 ENV GOPATH=/var/go
-RUN git clone https://github.com/supermitsuba/sms.git /var/go/src/github.com/supermitsuba/sms

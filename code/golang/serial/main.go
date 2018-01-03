@@ -89,13 +89,13 @@ func receivedMessage(message []byte) {
 	var m Message
 	json.Unmarshal(message, &m)
 	log.Printf("Received a message: %s", m.Text)
-	derp(" " + m.Text)
+	displayMessage(" " + m.Text)
 	timeout := time.Duration(m.Duration) * time.Second
 	time.Sleep(timeout)
-	derp(" ")
+	displayMessage(" ")
 }
 
-func derp(message string) {
+func displayMessage(message string) {
 	serialPort := os.Args[2]
 	if serialPort == "console" {
 		log.Printf("This is printing just to console. Message: %s", message)

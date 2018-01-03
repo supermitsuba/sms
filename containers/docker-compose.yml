@@ -67,7 +67,7 @@ services:
     container_name: forecast
   serial:
     image: supermitsuba/client_sms:1
-    entrypoint: ["./main", "amqp://guest:guest@rabbit_mq", "/dev/ttyUSB0"]
+    entrypoint: ["./main", "amqp://guest:guest@rabbit_mq", "/dev/ttyUSB0","http://web_message/api/status"]
     links:
     - web_message
     depends_on:

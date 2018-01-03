@@ -1,1 +1,0 @@
-This is the only service that runs outside.  This is because it needs to access the containers.
