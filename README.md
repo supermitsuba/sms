@@ -18,3 +18,7 @@ This project has given me many different purposes or technologies to play with, 
 5. APIs
 6. Web sites
 7. Tiny distributed system
+
+Architecture
+============
+![](https://raw.githubusercontent.com/supermitsuba/sms/master/architecture.png)
