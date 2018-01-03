@@ -19,6 +19,8 @@ This project has given me many different purposes or technologies to play with, 
 6. Web sites
 7. Tiny distributed system
 
+More configuration here : [Containers and configuration](https://github.com/supermitsuba/sms/tree/master/containers)
+
 Architecture
 ============
 ![](https://raw.githubusercontent.com/supermitsuba/sms/master/architecture.png)
