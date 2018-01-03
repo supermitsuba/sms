@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -24,10 +26,15 @@ type receiveMessageFunc func(<-chan amqp.Delivery)
 func main() {
 	fmt.Println(os.Args)
 	amqpURL := os.Args[1]
+	statusUrl := os.Args[3]
 
 	listenForMesages(amqpURL, "messages", func(msgs <-chan amqp.Delivery) {
 		for d := range msgs {
-			receivedMessage(d.Body)
+			status := GetStatus(statusUrl)
+			log.Printf("(%t) Is printing message '%s' ", status.isLedActive, d.Body)
+			if status.isLedActive != "false" {
+				receivedMessage(d.Body)
+			}
 			d.Ack(false)
 			log.Printf("Done")
 		}
@@ -116,6 +123,21 @@ func derp(message string) {
 
 		s.Close()
 	}
+}
+
+func GetStatus(URL string) Status {
+	resp, err := http.Get(URL)
+	failOnError(err, "Could not send http request.")
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+
+	var s Status
+	json.Unmarshal(body, &s)
+	return s
+}
+
+type Status struct {
+	isLedActive string `json:"isLedActive"`
 }
 
 type Message struct {
