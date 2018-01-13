@@ -5,7 +5,7 @@ RUN git clone https://github.com/supermitsuba/sms.git /var/go/src/github.com/sup
 # install docker for running docker containers
 RUN curl -sSL https://get.docker.com | sh
 
-WORKDIR /var/go/src/github.com/supermitsuba/sms/web/golang/
+WORKDIR /var/go/src/github.com/supermitsuba/sms/code/golang/web
 
 RUN  go get -d -v
 RUN  go build main.go
