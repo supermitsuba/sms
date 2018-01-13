@@ -28,18 +28,8 @@ services:
     container_name: rabbit_mq
   # base sms
   # used to install all the dependencies so the rebuild of other images are faster
-  base-sms:
-    image: supermitsuba/basesms:1
-    container_name: base-sms
-  # web message
-  # Web site and API for the SMS system
-  # Arguments:
-  # 1. application (./main)
-  # 2. rabbit mq location 
-  # 3. name of weather container
-  # 4. name of forecast container
   web_message:
-    image: supermitsuba/web_message:1
+    image: supermitsuba/web_message:latest
     ports: 
     - "8000:5000"
     volumes:
@@ -47,8 +37,6 @@ services:
     entrypoint: ["./main", "amqp://guest:guest@rabbit_mq", "weather", "forecast"]
     links:
     - rabbit_mq
-    depends_on:
-    - base-sms
   # time timer
   # Sends the time to the web message api
   # Arguments:
@@ -60,8 +48,6 @@ services:
     links:
     - web_message
     container_name: time
-    depends_on:
-    - base-sms
   # weather timer
   # Sends current weather to web message api
   # Arguments:
@@ -73,8 +59,6 @@ services:
     entrypoint: ["./main", "http://web_message:5000/api/message", "http://api.openweathermap.org/data/2.5/weather?zip=48307,us&appid="]
     links:
     - web_message
-    depends_on:
-    - base-sms
     container_name: weather
   # message timer
   # Send message to web message api
@@ -87,8 +71,6 @@ services:
     entrypoint: ["./main", "http://web_message:5000/api/message", "WiFi"]
     links:
     - web_message
-    depends_on:
-    - base-sms
     container_name: message
   # forecast timer
   # Sends 5 day forecast to web message api
@@ -101,7 +83,6 @@ services:
     entrypoint: ["./main", "http://web_message:5000/api/message", "http://api.openweathermap.org/data/2.5/forecast?zip=48307,us&appid="]
     links:
     - web_message
-    - base-sms
     container_name: forecast
   # serial
   # Application service that reads messages off the queue and prints it to LED
@@ -115,7 +96,5 @@ services:
     entrypoint: ["./main", "amqp://guest:guest@rabbit_mq", "/dev/ttyUSB0","http://web_message/api/status"]
     links:
     - web_message
-    depends_on:
-    - base-sms
     devices:
     - "/dev/ttyACM0:/dev/ttyUSB0"

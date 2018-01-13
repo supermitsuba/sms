@@ -76,7 +76,7 @@
         </div>
         <div>
             <strong>Status: </strong>
-                <div id="ledActive"></div><div class="circle"></div>
+                <div id="ledActive"></div><div id="status" class="circle"></div>
             <div>
                 <input type="button" id="submitLED" value="On/Off LED" />
             </div>
@@ -164,18 +164,18 @@
                         success: function(data){
                             $('#ledActive').text("Is LED Active: "+data.isLEDActive); 
                             if(data.isLEDActive) {
-                                $('#ledActive').removeClass("error");
-                                $('#ledActive').addClass("ok");
+                                $('#status').removeClass("error");
+                                $('#status').addClass("ok");
                             }
                             else {
-                                $('#ledActive').removeClass("ok");
-                                $('#ledActive').addClass("error");
+                                $('#status').removeClass("ok");
+                                $('#status').addClass("error");
                             }
                         },
                         fail: function() {
                             $('#ledActive').text("error");
-                            $('#ledActive').removeClass("ok");
-                            $('#ledActive').addClass("error");
+                            $('#status').removeClass("ok");
+                            $('#status').addClass("error");
                         }
                     });
                 }
