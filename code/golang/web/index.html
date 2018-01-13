@@ -1,6 +1,69 @@
 <html>
     <head>
-        
+        <style>
+            .circle {
+                width: 15px;
+                height: 15px;
+                border-radius: 50%;
+                border-style: solid;
+                border-width: 1px;
+                display: inline-block;
+            }
+            
+            @keyframes blinking-red {
+                0%   {background-color: red;}
+                25%  {background-color: white;}
+                50%  {background-color: white;}
+                100% {background-color: red;}
+            }
+            
+            @keyframes blinking-yellow {
+                0%   {background-color: yellow;}
+                25%  {background-color: white;}
+                50%  {background-color: white;}
+                100% {background-color: yellow;}
+            }
+            
+            @keyframes blinking-green {
+                0%   {background-color: green;}
+                25%  {background-color: white;}
+                50%  {background-color: white;}
+                100% {background-color: green;}
+            }
+
+            @keyframes blinking-red {
+                0%   {background-color: red;}
+                25%  {background-color: white;}
+                50%  {background-color: white;}
+                100% {background-color: red;}
+            }
+
+            @keyframes blinking-yellow {
+                0%   {background-color: yellow;}
+                25%  {background-color: white;}
+                50%  {background-color: white;}
+                100% {background-color: yellow;}
+            }
+
+            @keyframes blinking-green {
+                0%   {background-color: green;}
+                25%  {background-color: white;}
+                50%  {background-color: white;}
+                100% {background-color: green;}
+            }
+
+            .warning {
+                animation: blinking-yellow 1s infinite;
+            }
+
+            .ok {
+                background-color: green;
+            }
+
+            .error {
+                animation: blinking-red 1s infinite;
+            }
+        </style>
     </head>
     <body>
         <h1>Print a message!</h1>
@@ -13,7 +76,7 @@
         </div>
         <div>
             <strong>Status: </strong>
-            <div id="ledActive"></div>
+                <div id="ledActive"></div><div class="circle"></div>
             <div>
                 <input type="button" id="submitLED" value="On/Off LED" />
             </div>
@@ -100,9 +163,19 @@
                         url: url+"api/status",
                         success: function(data){
                             $('#ledActive').text("Is LED Active: "+data.isLEDActive); 
+                            if(data.isLEDActive) {
+                                $('#ledActive').removeClass("error");
+                                $('#ledActive').addClass("ok");
+                            }
+                            else {
+                                $('#ledActive').removeClass("ok");
+                                $('#ledActive').addClass("error");
+                            }
                         },
                         fail: function() {
                             $('#ledActive').text("error");
+                            $('#ledActive').removeClass("ok");
+                            $('#ledActive').addClass("error");
                         }
                     });
                 }
