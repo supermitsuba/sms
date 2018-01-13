@@ -77,17 +77,24 @@ $(function() {
             type: "GET",
             url: url+"api/status",
             success: function(data){
-                $('#ledActive').text("Is LED Active: "+data.isLEDActive); 
+                $('#ledActive').text(data.isLEDActive ? "On" : "Off"); 
                 if(data.isLEDActive) {
+                    $('#ledActive').removeClass("badge-danger");
+                    $('#ledActive').addClass("badge-success");
                     $('#status').removeClass("error");
                     $('#status').addClass("ok");
                 }
                 else {
+                    $('#ledActive').addClass("badge-danger");
+                    $('#ledActive').removeClass("badge-success");
                     $('#status').removeClass("ok");
                     $('#status').addClass("error");
                 }
             },
             fail: function() {
+                $('#ledActive').addClass("badge-danger");
+                $('#ledActive').removeClass("badge-success");
+
                 $('#ledActive').text("error");
                 $('#status').removeClass("ok");
                 $('#status').addClass("error");
