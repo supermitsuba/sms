@@ -1,0 +1,11 @@
+.warning {
+    animation: blinking-yellow 1s infinite;
+}
+
+.ok {
+    background-color: green;
+}
+
+.error {
+    animation: blinking-red 1s infinite;
+}

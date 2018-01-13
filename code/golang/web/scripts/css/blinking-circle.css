@@ -1,0 +1,29 @@
+.circle {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border-style: solid;
+    border-width: 1px;
+    display: inline-block;
+}
+
+@keyframes blinking-red {
+    0%   {background-color: red;}
+    25%  {background-color: white;}
+    50%  {background-color: white;}
+    100% {background-color: red;}
+}
+
+@keyframes blinking-yellow {
+    0%   {background-color: yellow;}
+    25%  {background-color: white;}
+    50%  {background-color: white;}
+    100% {background-color: yellow;}
+}
+
+@keyframes blinking-green {
+    0%   {background-color: green;}
+    25%  {background-color: white;}
+    50%  {background-color: white;}
+    100% {background-color: green;}
+}

@@ -1,185 +1,47 @@
 <html>
     <head>
-        <style>
-            .circle {
-                width: 15px;
-                height: 15px;
-                border-radius: 50%;
-                border-style: solid;
-                border-width: 1px;
-                display: inline-block;
-            }
-            
-            @keyframes blinking-red {
-                0%   {background-color: red;}
-                25%  {background-color: white;}
-                50%  {background-color: white;}
-                100% {background-color: red;}
-            }
-            
-            @keyframes blinking-yellow {
-                0%   {background-color: yellow;}
-                25%  {background-color: white;}
-                50%  {background-color: white;}
-                100% {background-color: yellow;}
-            }
-            
-            @keyframes blinking-green {
-                0%   {background-color: green;}
-                25%  {background-color: white;}
-                50%  {background-color: white;}
-                100% {background-color: green;}
-            }
+        <link rel="stylesheet" href="scripts/css/blinking-circle.css">
+        <link rel="stylesheet" href="scripts/css/index.css">
 
-            @keyframes blinking-red {
-                0%   {background-color: red;}
-                25%  {background-color: white;}
-                50%  {background-color: white;}
-                100% {background-color: red;}
-            }
-
-            @keyframes blinking-yellow {
-                0%   {background-color: yellow;}
-                25%  {background-color: white;}
-                50%  {background-color: white;}
-                100% {background-color: yellow;}
-            }
-
-            @keyframes blinking-green {
-                0%   {background-color: green;}
-                25%  {background-color: white;}
-                50%  {background-color: white;}
-                100% {background-color: green;}
-            }
-
-            .warning {
-                animation: blinking-yellow 1s infinite;
-            }
-
-            .ok {
-                background-color: green;
-            }
-
-            .error {
-                animation: blinking-red 1s infinite;
-            }
-        </style>
+        <link rel="stylesheet" href="scripts/css/bootstrap.min.css" />
     </head>
     <body>
-        <h1>Print a message!</h1>
-        <div>
-            <strong>Message:</strong>
-            <input type="text" id="message" />
-            <input type="button" id="submitMessage" value="Send Message" />
-            <input type="button" id="submitWeather" value="Send Weather" />
-            <input type="button" id="submitForecast" value="Send Forecast" />
-        </div>
-        <div>
-            <strong>Status: </strong>
-                <div id="ledActive"></div><div id="status" class="circle"></div>
-            <div>
-                <input type="button" id="submitLED" value="On/Off LED" />
+        <nav class="navbar navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">Print a message!</a>
+        </nav>
+        <div class="container">
+            <div class="row mb-3 mt-5">
+                <div class="col">
+                    <span class="badge badge-info"><strong>Message:</strong></span>
+                    <input type="text" id="message" />
+                    <input type="button" class="btn btn-success mb-3" id="submitMessage" value="Send Message" />
+                </div>
+                <div class="col">
+                    <input type="button" class="btn btn-warning mb-3" id="submitWeather" value="Send Weather" />
+                    <input type="button" class="btn btn-danger mb-3" id="submitForecast" value="Send Forecast" />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col">
+                    <span class="badge badge-info"><strong>Is Sign On: </strong></span>
+                    <div id="status" class="circle"></div>
+                </div>
+                <div class="col">
+                    <input type="button" class="btn btn-primary" id="submitLED" value="On/Off LED" />
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col">
+                    <span class="badge badge-info" id="ledActive"></span>
+                </div>
+                <div class="row">
+
+                </div>
             </div>
         </div>
+
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"></script>
-        <script type="text/javascript">
-            $(function() {
-                var url = getBaseUrl()[0];
-                displayLed();
-
-                $('#submitMessage').click(function(){
-                    var message = {
-                        'text': $('#message').val(),
-                        'duration' : 10
-                    }
-
-                    $.ajax({
-                        type: "POST",
-                        url: url+"api/message",
-                        data: JSON.stringify(message),
-                        success: function(){
-                            alert('Sent!')   
-                        },
-                        fail: function() {
-                            alert( "error" );
-                        }
-                    });
-                })
-
-                $('#submitForecast').click(function(){
-                    $.ajax({
-                        type: "POST",
-                        url: url+"api/forecast",
-                        success: function(){
-                            alert('Sent!')   
-                        },
-                        fail: function() {
-                            alert( "error" );
-                        }
-                    });
-                })
-
-                $('#submitWeather').click(function(){
-                    var message = {
-                        'text': $('#message').val(),
-                        'duration' : 10
-                    }
-
-                    $.ajax({
-                        type: "POST",
-                        url: url+"api/weather",
-                        success: function(){
-                            alert('Sent!')   
-                        },
-                        fail: function() {
-                            alert( "error" );
-                        }
-                    });
-                })
-
-                $('#submitLED').click(function(){
-                    $.ajax({
-                        type: "POST",
-                        url: url+"api/led",
-                        success: function(){
-                            alert('Sent!')   
-                        },
-                        fail: function() {
-                            alert( "error" );
-                        }
-                    });
-
-                    displayLed();
-                })
-                
-                function getBaseUrl() {
-                    var re = new RegExp(/^.*\//);
-                    return re.exec(window.location.href);
-                }
-
-                function displayLed() {
-                    $.ajax({
-                        type: "GET",
-                        url: url+"api/status",
-                        success: function(data){
-                            $('#ledActive').text("Is LED Active: "+data.isLEDActive); 
-                            if(data.isLEDActive) {
-                                $('#status').removeClass("error");
-                                $('#status').addClass("ok");
-                            }
-                            else {
-                                $('#status').removeClass("ok");
-                                $('#status').addClass("error");
-                            }
-                        },
-                        fail: function() {
-                            $('#ledActive').text("error");
-                            $('#status').removeClass("ok");
-                            $('#status').addClass("error");
-                        }
-                    });
-                }
-            });
-        </script>
+        <script src="scripts/js/bootstrap.min.js"></script>
+        <script src="scripts/js/index.js"></script>
     </body>
 </html>

@@ -26,10 +26,13 @@ type Status struct {
 var isLedActive bool
 
 func main() {
+	staticFileDirectory := http.Dir("./scripts/")
+	staticFileHandler := http.StripPrefix("/scripts/", http.FileServer(staticFileDirectory))
 
 	isLedActive = true
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", Index).Methods("GET")
+	router.PathPrefix("/scripts/").Handler(staticFileHandler).Methods("GET")
 	router.HandleFunc("/api/test", Test).Methods("GET")
 	router.HandleFunc("/api/message", MessageFunc).Methods("POST")
 	router.HandleFunc("/api/weather", WeatherFunc).Methods("POST")
