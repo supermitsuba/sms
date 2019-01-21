@@ -81,7 +81,7 @@ func main() {
 }
 
 func ConvertTempToFahrenheit(tempCelsius float64) string {
-	temp := (tempCelsius * 9 / 5) - 459.17
+	// temp := (tempCelsius * 9 / 5) - 459.17
 	return strconv.FormatFloat(tempCelsius, 'f', 0, 64)
 	// use this if you are doing Kelvin
 	// strconv.FormatFloat(temp, 'f', 0, 64)
