@@ -15,7 +15,7 @@ import (
 func main() {
 	weather := GetWeather(os.Args[2])
 	// temp1 := (weather.Main.Temperature * 9 / 5) - 459.17
-	temp := weather.Main.Temperature // strconv.FormatFloat(temp1, 'f', 0, 64)
+	temp := strconv.FormatFloat(weather.Main.Temperature, 'f', 0, 64)
 	message := Message{
 		Text:     "Now:     " + temp + " F   " + weather.WeatherSections[0].Main,
 		Duration: 30,
